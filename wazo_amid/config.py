@@ -54,6 +54,7 @@ class AmidConfigDict(TypedDict):
     user: str
     debug: bool
     logfile: str
+    log_level: str
     config_file: str
     extra_config_files: str
     publish_ami_events: bool
@@ -179,10 +180,9 @@ def load_config() -> AmidConfigDict:
         ChainMap(cli_config, file_config, _DEFAULT_CONFIG)
     )
     service_key = _load_key_file(ChainMap(cli_config, file_config, _DEFAULT_CONFIG))
-    return ChainMap(reinterpreted_config, cli_config, service_key, file_config, _DEFAULT_CONFIG)
-
-
-def _parse_cli_args(argv):
+    return ChainMap(
+        reinterpreted_config, cli_config, service_key, file_config, _DEFAULT_CONFIG
+    )
     parser = argparse.ArgumentParser()
     parser.add_argument(
         '-c',
@@ -221,7 +221,7 @@ def _parse_cli_args(argv):
     return result
 
 
-def _get_reinterpreted_raw_values(config):
+def _get_reinterpreted_raw_values(config: dict[str, Any]) -> dict[str, Any]:
     result = {}
 
     log_level = config.get('log_level')
