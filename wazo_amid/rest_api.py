@@ -1,4 +1,4 @@
-# Copyright 2016-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2016-2025 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
@@ -38,7 +38,7 @@ VERSION = 1.0
 
 app = Flask('wazo_amid')
 logger = logging.getLogger(__name__)
-api = Api(prefix=f'/{VERSION}')
+api = Api(app, prefix=f'/{VERSION}')
 auth_verifier = AuthVerifierFlask()
 wsgi_server: wsgi.WSGIServer = None
 
