@@ -24,6 +24,7 @@ pipeline {
     }
     stage('Docker build') {
       steps {
+        sh "sed -i s/master.zip/bookworm.zip/ requirements.txt"
         sh "docker build --no-cache -t wazoplatform/wazo-amid:bookworm ."
       }
     }
