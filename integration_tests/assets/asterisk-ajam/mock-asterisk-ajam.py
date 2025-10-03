@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright 2015-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2015-2025 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
@@ -7,7 +7,8 @@ from __future__ import annotations
 import logging
 import sys
 import textwrap
-from typing import Any, Callable, TypedDict
+from collections.abc import Callable
+from typing import Any, TypedDict
 
 from flask import Flask, Response, jsonify, request
 
