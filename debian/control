@@ -12,9 +12,6 @@ X-Python3-Version: >= 3.11
 
 Package: wazo-amid
 Architecture: all
-Provides: wazo-libamid
-Conflicts: wazo-libamid
-Replaces: wazo-libamid
 Depends:
  ${python3:Depends},
  adduser,
