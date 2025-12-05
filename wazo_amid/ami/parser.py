@@ -1,4 +1,4 @@
-# Copyright 2012-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2012-2025 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
@@ -6,12 +6,12 @@ from __future__ import annotations
 import functools
 import logging
 from collections.abc import Callable
-from typing import Any, TypedDict, Union
+from typing import Any, TypedDict
 
 logger = logging.getLogger(__name__)
 
 
-ParserCallback = Callable[[str, Union[str, None], dict[str, Any]], None]
+ParserCallback = Callable[[str, str | None, dict[str, Any]], None]
 
 
 class AMIParsingError(Exception):
