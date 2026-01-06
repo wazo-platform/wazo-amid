@@ -49,14 +49,13 @@ class TestConfigAPI(APIIntegrationTest):
 
     def test_that_empty_body_returns_400(self) -> None:
         port = self.asset_cls.service_port(9491, 'amid')
-        url = f'http://127.0.0.1:{port}/1.0/config'
-
         headers = {
             'X-Auth-Token': VALID_TOKEN,
         }
 
+        config_url = f'http://127.0.0.1:{port}/1.0/config'
         response = requests.patch(
-            url,
+            config_url,
             headers=headers,
             data='',
             verify=False,
@@ -64,7 +63,41 @@ class TestConfigAPI(APIIntegrationTest):
         assert response.status_code == 400
 
         response = requests.patch(
-            url,
+            config_url,
+            headers=headers,
+            data=None,
+            verify=False,
+        )
+        assert response.status_code == 400
+
+        command_url = f'http://127.0.0.1:{port}/1.0/action/Command'
+        response = requests.post(
+            command_url,
+            headers=headers,
+            data='',
+            verify=False,
+        )
+        assert response.status_code == 400
+
+        response = requests.post(
+            command_url,
+            headers=headers,
+            data=None,
+            verify=False,
+        )
+        assert response.status_code == 400
+
+        action_url = f'http://127.0.0.1:{port}/1.0/action/test'
+        response = requests.post(
+            action_url,
+            headers=headers,
+            data='',
+            verify=False,
+        )
+        assert response.status_code == 400
+
+        response = requests.post(
+            action_url,
             headers=headers,
             data=None,
             verify=False,
