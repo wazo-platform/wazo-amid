@@ -5,7 +5,6 @@ import random
 import string
 
 import pytest
-import requests
 from hamcrest import (
     assert_that,
     calling,
@@ -20,7 +19,7 @@ from hamcrest import (
 from wazo_amid_client.exceptions import AmidError
 from wazo_test_helpers.hamcrest.raises import raises
 
-from .helpers.base import VALID_TOKEN, APIIntegrationTest
+from .helpers.base import APIIntegrationTest
 
 
 @pytest.mark.usefixtures('base')
@@ -197,39 +196,3 @@ class TestHTTPError(APIIntegrationTest):
                     )
                 ),
             )
-
-    def _make_raw_http_call(
-        self, verb: str, url: str, body: str | None
-    ) -> requests.Response:
-        headers = {
-            'X-Auth-Token': VALID_TOKEN,
-        }
-
-        match verb:
-            case 'post':
-                call = requests.post
-            case 'patch':
-                call = requests.patch  # type: ignore
-            case _:
-                raise ValueError('Unexpected verb')
-
-        return call(
-            url,
-            headers=headers,
-            data=body,
-            verify=False,
-        )
-
-    def test_that_empty_body_returns_400(self) -> None:
-        port = self.asset_cls.service_port(9491, 'amid')
-        urls = [
-            ('patch', f'http://127.0.0.1:{port}/1.0/config'),
-            ('post', f'http://127.0.0.1:{port}/1.0/action/Command'),
-        ]
-
-        for url in urls:
-            response = self._make_raw_http_call(url[0], url[1], '')
-            assert response.status_code == 400, f'Error with url: {url}'
-
-            response = self._make_raw_http_call(url[0], url[1], None)
-            assert response.status_code == 400, f'Error with url: {url}'

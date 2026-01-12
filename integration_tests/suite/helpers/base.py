@@ -1,4 +1,4 @@
-# Copyright 2015-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2015-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging
@@ -183,3 +183,25 @@ class APIIntegrationTest(unittest.TestCase):
         response = requests.get(cls.ajam_url('_requests'))
         assert_that(response.status_code, equal_to(200))
         return response.json()
+
+    def _make_raw_http_call(
+        self, verb: str, url: str, body: str | None
+    ) -> requests.Response:
+        headers = {
+            'X-Auth-Token': VALID_TOKEN,
+        }
+
+        match verb:
+            case 'post':
+                call = requests.post
+            case 'patch':
+                call = requests.patch  # type: ignore
+            case _:
+                raise ValueError('Unexpected verb')
+
+        return call(
+            url,
+            headers=headers,
+            data=body,
+            verify=False,
+        )
