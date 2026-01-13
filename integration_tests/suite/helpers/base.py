@@ -184,9 +184,11 @@ class APIIntegrationTest(unittest.TestCase):
         assert_that(response.status_code, equal_to(200))
         return response.json()
 
-    def _make_raw_http_call(
+    def _make_http_request(
         self, verb: str, url: str, body: str | None
     ) -> requests.Response:
+        port = self.asset_cls.service_port(9491, 'amid')
+        base_url = f'http://127.0.0.1:{port}/1.0/'
         headers = {
             'X-Auth-Token': VALID_TOKEN,
         }
@@ -200,8 +202,16 @@ class APIIntegrationTest(unittest.TestCase):
                 raise ValueError('Unexpected verb')
 
         return call(
-            url,
+            base_url + url,
             headers=headers,
             data=body,
             verify=False,
         )
+
+    def assert_empty_body_returns_400(self, urls: list[tuple[str, str]]) -> None:
+        for method, url in urls:
+            response = self._make_http_request(method, url, '')
+            assert response.status_code == 400, f'Error with url: ({method}) {url}'
+
+            response = self._make_http_request(method, url, None)
+            assert response.status_code == 400, f'Error with url: ({method}) {url}'

@@ -46,16 +46,5 @@ class TestConfigAPI(APIIntegrationTest):
         assert_that(debug_false_patched_config, equal_to(debug_false_config))
         assert_that(debug_false_config, has_entry('debug', False))
 
-    def test_that_empty_body_returns_400(self) -> None:
-        port = self.asset_cls.service_port(9491, 'amid')
-        urls = [
-            ('patch', f'http://127.0.0.1:{port}/1.0/config'),
-            ('post', f'http://127.0.0.1:{port}/1.0/action/Command'),
-        ]
-
-        for method, url in urls:
-            response = self._make_raw_http_call(method, url, '')
-            assert response.status_code == 400, f'Error with url: {url}'
-
-            response = self._make_raw_http_call(method, url, None)
-            assert response.status_code == 400, f'Error with url: {url}'
+    def test_that_empty_body_when_patch_config_returns_400(self) -> None:
+        self.assert_empty_body_returns_400([('patch', 'config')])
