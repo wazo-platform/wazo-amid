@@ -197,7 +197,5 @@ class TestHTTPError(APIIntegrationTest):
                 ),
             )
 
-        def test_that_empty_body_when_post_command_returns_400(
-            self: TestHTTPError,
-        ) -> None:
-            self.assert_empty_body_returns_400([('post', 'action/Command')])
+    def test_that_empty_body_when_post_command_returns_400(self) -> None:
+        self.assert_empty_body_returns_400([('post', 'action/Command')])
