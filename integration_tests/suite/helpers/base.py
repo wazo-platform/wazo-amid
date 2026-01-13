@@ -1,4 +1,4 @@
-# Copyright 2015-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2015-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging
@@ -183,3 +183,35 @@ class APIIntegrationTest(unittest.TestCase):
         response = requests.get(cls.ajam_url('_requests'))
         assert_that(response.status_code, equal_to(200))
         return response.json()
+
+    def _make_http_request(
+        self, verb: str, url: str, body: str | None
+    ) -> requests.Response:
+        port = self.asset_cls.service_port(9491, 'amid')
+        base_url = f'http://127.0.0.1:{port}/1.0/'
+        headers = {
+            'X-Auth-Token': VALID_TOKEN,
+        }
+
+        match verb:
+            case 'post':
+                call = requests.post
+            case 'patch':
+                call = requests.patch  # type: ignore
+            case _:
+                raise ValueError('Unexpected verb')
+
+        return call(
+            base_url + url,
+            headers=headers,
+            data=body,
+            verify=False,
+        )
+
+    def assert_empty_body_returns_400(self, urls: list[tuple[str, str]]) -> None:
+        for method, url in urls:
+            response = self._make_http_request(method, url, '')
+            assert response.status_code == 400, f'Error with url: ({method}) {url}'
+
+            response = self._make_http_request(method, url, None)
+            assert response.status_code == 400, f'Error with url: ({method}) {url}'

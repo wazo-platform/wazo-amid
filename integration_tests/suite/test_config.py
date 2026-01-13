@@ -1,4 +1,4 @@
-# Copyright 2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2024-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import pytest
@@ -45,3 +45,6 @@ class TestConfigAPI(APIIntegrationTest):
         debug_false_config = self.amid.config()
         assert_that(debug_false_patched_config, equal_to(debug_false_config))
         assert_that(debug_false_config, has_entry('debug', False))
+
+    def test_that_empty_body_when_patch_config_returns_400(self) -> None:
+        self.assert_empty_body_returns_400([('patch', 'config')])

@@ -1,4 +1,4 @@
-# Copyright 2015-2023 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2015-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import random
@@ -196,3 +196,6 @@ class TestHTTPError(APIIntegrationTest):
                     )
                 ),
             )
+
+    def test_that_empty_body_when_post_command_returns_400(self) -> None:
+        self.assert_empty_body_returns_400([('post', 'action/Command')])

@@ -29,7 +29,7 @@ class ConfigResource(AuthResource):
     @required_master_tenant()
     @required_acl('amid.config.update')
     def patch(self) -> tuple:
-        config_patch = config_patch_schema.load(request.get_json(), many=True)
+        config_patch = config_patch_schema.load(request.get_json(force=True), many=True)
         config = self._config_service.get_config()
         patched_config = JsonPatch(config_patch).apply(config)
         self._config_service.update_config(patched_config)
