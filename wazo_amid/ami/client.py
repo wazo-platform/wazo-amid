@@ -1,14 +1,14 @@
-# Copyright 2012-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2012-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
 
 import logging
 import socket
-from collections import defaultdict, deque
+from collections import deque
 from typing import NamedTuple
 
-from xivo.status import Status
+from xivo.status import Status, StatusDict
 
 from wazo_amid.ami import parser
 
@@ -125,7 +125,7 @@ class AMIClient:
             self._sock.shutdown(socket.SHUT_RDWR)
             self.disconnect(reason='explicit stop')
 
-    def provide_status(self, status: defaultdict[str, defaultdict[str, str]]) -> None:
+    def provide_status(self, status: StatusDict) -> None:
         status['ami_socket']['status'] = Status.ok if self._sock else Status.fail
 
 

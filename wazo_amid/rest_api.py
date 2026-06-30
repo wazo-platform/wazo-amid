@@ -1,4 +1,4 @@
-# Copyright 2016-2025 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2016-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
@@ -6,10 +6,8 @@ from __future__ import annotations
 import logging
 import os
 from datetime import timedelta
-from functools import wraps
 from typing import TYPE_CHECKING, TypedDict
 
-import marshmallow
 from flask import Flask
 from flask_cors import CORS
 from flask_restful import Api, Resource
@@ -17,21 +15,14 @@ from werkzeug.middleware.proxy_fix import ProxyFix
 from xivo import http_helpers, plugin_helpers, rest_api_helpers, wsgi
 from xivo.flask.auth_verifier import AuthVerifierFlask
 from xivo.http_helpers import ReverseProxied
+from xivo.mallow_helpers import handle_validation_exception
 
 from wazo_amid.plugin_helpers.ajam import AJAMClient
 
-from .exceptions import ValidationError
-
 if TYPE_CHECKING:
-    from collections.abc import Callable
-    from typing import ParamSpec, TypeVar
-
     from xivo.status import StatusAggregator
 
     from .config import AmidConfigDict, RestApiConfigDict
-
-    P = ParamSpec('P')
-    R = TypeVar('R')
 
 
 VERSION = 1.0
@@ -40,7 +31,7 @@ app = Flask('wazo_amid')
 logger = logging.getLogger(__name__)
 api = Api(app, prefix=f'/{VERSION}')
 auth_verifier = AuthVerifierFlask()
-wsgi_server: wsgi.WSGIServer = None
+wsgi_server: wsgi.WSGIServer | None = None
 
 
 class PluginDependencies(TypedDict):
@@ -117,17 +108,6 @@ def run(config: RestApiConfigDict) -> None:
 def stop() -> None:
     if wsgi_server:
         wsgi_server.stop()
-
-
-def handle_validation_exception(func: Callable[P, R]) -> Callable[P, R]:
-    @wraps(func)
-    def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
-        try:
-            return func(*args, **kwargs)
-        except marshmallow.ValidationError as e:
-            raise ValidationError(e.messages)
-
-    return wrapper
 
 
 class ErrorCatchingResource(Resource):

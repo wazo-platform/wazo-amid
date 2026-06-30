@@ -1,4 +1,4 @@
-# Copyright 2023-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2023-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
@@ -10,7 +10,7 @@ from xivo.status import Status
 from .http import StatusResource
 
 if TYPE_CHECKING:
-    from collections import defaultdict
+    from xivo.status import StatusDict
 
     from wazo_amid.rest_api import PluginDependencies
 
@@ -29,5 +29,5 @@ class Plugin:
         )
 
 
-def provide_status(status: defaultdict[str, defaultdict[str, str]]) -> None:
+def provide_status(status: StatusDict) -> None:
     status['rest_api']['status'] = Status.ok
