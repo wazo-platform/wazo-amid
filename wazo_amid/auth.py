@@ -1,10 +1,10 @@
-# Copyright 2020-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2020-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
 
 from collections.abc import Callable
-from typing import TYPE_CHECKING, TypeVar
+from typing import TYPE_CHECKING, Any, TypeVar
 
 from werkzeug.local import LocalProxy as Proxy
 from xivo.auth_verifier import required_acl as required_acl_
@@ -16,7 +16,7 @@ from .rest_api import app
 if TYPE_CHECKING:
     from wazo_auth_client.types import TokenDict
 
-    F = TypeVar('F')
+    F = TypeVar('F', bound=Callable[..., Any])
 
 required_acl = required_acl_
 

@@ -1,12 +1,14 @@
-# Copyright 2012-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2012-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
 
 import logging
 import signal
+from collections.abc import MutableMapping
 from functools import partial
 from types import FrameType
+from typing import Any, cast
 
 from xivo.config_helper import set_xivo_uuid
 from xivo.user_rights import change_user
@@ -26,7 +28,7 @@ def main() -> None:
     if config.get('user'):
         change_user(config['user'])
 
-    set_xivo_uuid(config, logger)
+    set_xivo_uuid(cast(MutableMapping[str, Any], config), logger)
 
     controller = Controller(config)
     signal.signal(signal.SIGTERM, partial(_signal_handler, controller))

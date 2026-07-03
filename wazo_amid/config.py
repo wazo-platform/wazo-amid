@@ -1,10 +1,10 @@
-# Copyright 2014-2024 The Wazo Authors  (see the AUTHORS file)
+# Copyright 2014-2026 The Wazo Authors  (see the AUTHORS file)
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from __future__ import annotations
 
 import argparse
-from typing import Any, Literal, TypedDict
+from typing import Any, Literal, TypedDict, cast
 
 from xivo.chain_map import ChainMap
 from xivo.config_helper import parse_config_file, read_config_file_hierarchy
@@ -161,7 +161,7 @@ def _get_cli_config() -> dict[str, Any]:
     return config
 
 
-def _load_key_file(config: dict[str, Any]) -> dict[str, Any]:
+def _load_key_file(config: ChainMap) -> dict[str, Any]:
     if config['auth'].get('username') and config['auth'].get('password'):
         return {}
 
@@ -181,12 +181,15 @@ def load_config() -> AmidConfigDict:
         ChainMap(cli_config, file_config, _DEFAULT_CONFIG)
     )
     service_key = _load_key_file(ChainMap(cli_config, file_config, _DEFAULT_CONFIG))
-    return ChainMap(
-        reinterpreted_config, cli_config, service_key, file_config, _DEFAULT_CONFIG
+    return cast(
+        AmidConfigDict,
+        ChainMap(
+            reinterpreted_config, cli_config, service_key, file_config, _DEFAULT_CONFIG
+        ),
     )
 
 
-def _get_reinterpreted_raw_values(config: dict[str, Any]) -> dict[str, Any]:
+def _get_reinterpreted_raw_values(config: ChainMap) -> dict[str, Any]:
     result = {}
 
     log_level = config.get('log_level')
