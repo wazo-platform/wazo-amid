@@ -47,6 +47,7 @@ class RestApiConfigDict(TypedDict):
     certificate: str | None
     private_key: str | None
     cors: CorsConfigDict
+    min_threads: int
     max_threads: int
 
 
@@ -111,7 +112,8 @@ _DEFAULT_CONFIG: AmidConfigDict = {  # type: ignore
         'certificate': None,
         'private_key': None,
         'cors': {'enabled': True, 'allow_headers': ['Content-Type', 'X-Auth-Token']},
-        'max_threads': 10,
+        'min_threads': 10,
+        'max_threads': 100,
     },
     'enabled_plugins': {
         'api': True,
