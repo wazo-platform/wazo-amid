@@ -31,7 +31,7 @@ app = Flask('wazo_amid')
 logger = logging.getLogger(__name__)
 api = Api(app, prefix=f'/{VERSION}')
 auth_verifier = AuthVerifierFlask()
-wsgi_server: wsgi.WSGIServer | None = None
+wsgi_server: wsgi.DynamicWSGIServer | None = None
 
 
 class PluginDependencies(TypedDict):
@@ -80,10 +80,11 @@ def run(config: RestApiConfigDict) -> None:
 
     wsgi_app = ReverseProxied(ProxyFix(wsgi.WSGIPathInfoDispatcher({'/': app})))
     global wsgi_server
-    wsgi_server = wsgi.WSGIServer(
+    wsgi_server = wsgi.DynamicWSGIServer(
         bind_addr=bind_addr,
         wsgi_app=wsgi_app,
-        numthreads=config['max_threads'],
+        numthreads=config['min_threads'],
+        max=config['max_threads'],
     )
     if config['certificate'] and config['private_key']:
         logger.warning(
