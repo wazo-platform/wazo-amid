@@ -3,6 +3,8 @@ publish_ami_events: True
 
 auth:
   host: auth
+  port: 9497
+  prefix: null
   username: wazo-amid
   password: opensesame
 
