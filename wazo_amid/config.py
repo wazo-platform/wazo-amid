@@ -92,8 +92,7 @@ _DEFAULT_CONFIG: AmidConfigDict = {  # type: ignore
     },
     'auth': {
         'host': 'localhost',
-        'port': 9497,
-        'prefix': None,
+        'port': 80,
         'https': False,
         'key_file': '/var/lib/wazo-auth-keys/wazo-amid-key.yml',
     },

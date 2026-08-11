@@ -33,8 +33,7 @@ ajam:
 # Connection info to the authentication server
 auth:
   host: localhost
-  port: 9497
-  prefix: null
+  port: 80
   https: false
 
 # Connection info to the event bus (AMQP)
