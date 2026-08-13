@@ -5,6 +5,7 @@ from __future__ import annotations
 
 import logging
 import os
+import threading
 from datetime import timedelta
 from typing import TYPE_CHECKING, TypedDict
 
@@ -32,6 +33,7 @@ logger = logging.getLogger(__name__)
 api = Api(app, prefix=f'/{VERSION}')
 auth_verifier = AuthVerifierFlask()
 wsgi_server: wsgi.DynamicWSGIServer | None = None
+_stopped = threading.Event()
 
 
 class PluginDependencies(TypedDict):
@@ -103,10 +105,15 @@ def run(config: RestApiConfigDict) -> None:
     for route in http_helpers.list_routes(app):
         logger.debug(route)
 
+    if _stopped.is_set():
+        logger.warning('stop requested during startup: not starting the server')
+        return
+
     wsgi_server.start()
 
 
 def stop() -> None:
+    _stopped.set()
     if wsgi_server:
         wsgi_server.stop()
 
