@@ -6,7 +6,7 @@ StartLimitBurst=15
 StartLimitIntervalSec=150
 
 [Service]
-ExecStart=/usr/bin/python3 -u /usr/bin/wazo-amid
+ExecStart=/usr/bin/wazo-amid
 SyslogIdentifier=wazo-amid
 Restart=on-failure
 RestartSec=5
