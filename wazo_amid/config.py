@@ -51,10 +51,6 @@ class RestApiConfigDict(TypedDict):
     max_threads: int
 
 
-class MetricsConfigDict(TypedDict):
-    enabled: bool
-
-
 class AmidConfigDict(TypedDict):
     uuid: str
     user: str
@@ -70,7 +66,6 @@ class AmidConfigDict(TypedDict):
     bus: BusConfigDict
     rest_api: RestApiConfigDict
     enabled_plugins: dict[str, bool]
-    metrics: MetricsConfigDict
 
 
 _DAEMONNAME = 'wazo-amid'
@@ -124,10 +119,8 @@ _DEFAULT_CONFIG: AmidConfigDict = {  # type: ignore
         'actions': True,
         'commands': True,
         'config': True,
+        'metrics': False,
         'status': True,
-    },
-    'metrics': {
-        'enabled': True,
     },
 }
 

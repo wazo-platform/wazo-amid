@@ -15,7 +15,6 @@ from flask_restful import Api, Resource
 from werkzeug.middleware.proxy_fix import ProxyFix
 from xivo import http_helpers, plugin_helpers, rest_api_helpers, wsgi
 from xivo.flask.auth_verifier import AuthVerifierFlask
-from xivo.flask.metrics import init_flask_metrics
 from xivo.http_helpers import ReverseProxied
 from xivo.mallow_helpers import handle_validation_exception
 
@@ -59,11 +58,6 @@ def configure(
     if enabled:
         CORS(app, **cors_config)
 
-    # Before the plugins: if the old wazo-prometheus-exporter plugin is still
-    # installed, its duplicate registration then fails in plugin loading,
-    # where it is only logged, instead of here.
-    if global_config['metrics']['enabled']:
-        init_flask_metrics(app, api)
     load_resources(global_config, status_aggregator)
     api.init_app(app)
 
