@@ -2,12 +2,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import cast
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 import pytest
 
 from wazo_amid import rest_api
-from wazo_amid.config import RestApiConfigDict
+from wazo_amid.config import AmidConfigDict, RestApiConfigDict
 
 CONFIG = cast(
     RestApiConfigDict,
@@ -50,3 +50,48 @@ def test_stop_after_run_stops_the_server(wsgi):
     rest_api.stop()
 
     wsgi.DynamicWSGIServer.return_value.stop.assert_called_once_with()
+
+
+def _global_config(metrics_enabled):
+    return cast(
+        AmidConfigDict,
+        {
+            'rest_api': {'cors': {'enabled': False}},
+            'metrics': {'enabled': metrics_enabled},
+        },
+    )
+
+
+@patch('wazo_amid.rest_api.load_resources')
+@patch('wazo_amid.rest_api.init_flask_metrics')
+def test_configure_with_metrics_enabled_instruments_the_app(init_flask_metrics, _):
+    rest_api.configure(_global_config(True), Mock())
+
+    init_flask_metrics.assert_called_once_with(rest_api.app, rest_api.api)
+
+
+@patch('wazo_amid.rest_api.load_resources')
+@patch('wazo_amid.rest_api.init_flask_metrics')
+def test_configure_with_metrics_disabled_does_not_instrument_the_app(
+    init_flask_metrics, _
+):
+    rest_api.configure(_global_config(False), Mock())
+
+    init_flask_metrics.assert_not_called()
+
+
+@patch('wazo_amid.rest_api.load_resources')
+@patch('wazo_amid.rest_api.init_flask_metrics')
+def test_configure_instruments_the_app_before_loading_plugins(
+    init_flask_metrics, load_resources
+):
+    calls = Mock()
+    calls.attach_mock(init_flask_metrics, 'init_flask_metrics')
+    calls.attach_mock(load_resources, 'load_resources')
+
+    rest_api.configure(_global_config(True), Mock())
+
+    assert [name for name, _, _ in calls.mock_calls] == [
+        'init_flask_metrics',
+        'load_resources',
+    ]
