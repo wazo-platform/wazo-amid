@@ -1,3 +1,8 @@
+# Metrics are not authenticated: only serve them on 127.0.0.1:9491
+location = /api/amid/1.0/metrics {
+    deny all;
+}
+
 location ^~ /api/amid/ {
     proxy_pass http://127.0.0.1:9491/;
 
