@@ -21,7 +21,7 @@ setup(
             'actions = wazo_amid.plugins.actions.plugin:Plugin',
             'commands = wazo_amid.plugins.commands.plugin:Plugin',
             'config = wazo_amid.plugins.config.plugin:Plugin',
-            'metrics = wazo_amid.plugins.metrics.plugin:Plugin',
+            'metrics = xivo.flask.metrics:Plugin',
             'status = wazo_amid.plugins.status.plugin:Plugin',
         ],
     },
