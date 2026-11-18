@@ -1,6 +1,9 @@
 debug: True
 publish_ami_events: True
 
+enabled_plugins:
+  metrics: true
+
 auth:
   host: auth
   port: 9497
